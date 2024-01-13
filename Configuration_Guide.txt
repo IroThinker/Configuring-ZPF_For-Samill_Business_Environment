@@ -1,0 +1,39 @@
+Configure Basic Device Settings
+===============================
+The following tasks must be completed in this part:
+•	Cable the network shown in the diagram (with at least one PC in each network)
+•	Basic settings for all routers 
+o	Routers names
+o	IP addresses on routers 
+o	Routing configuration (either static routing or using RIP)
+•	Configure PC host IP settings.
+there should be end-to-end connectivity across the network.
+
+
+Configure Secure Router Administrative Access on all routers
+=============================================================
+The following tasks must be completed in this part:
+•	Configure encrypted passwords and a login banners.
+•	Configure the EXEC timeout value on console and VTY lines.
+•	Configure a local database administrative user 
+•	Configure Secure Shell (SSH) access and disable Telnet.
+
+
+Configure a Zone-Based Policy Firewall
+=======================================
+In this task, you will design a firewall solution and implement it using the following requirements 
+o	Internal users are allowed access to internal servers and DMZ servers 
+o	Returning Internet traffic (return packets coming from the Internet into the internal users site, in response to requests originating from any of the internal users network) should be allowed
+o	No traffic initiated from the Internet should be allowed into the internal users network or internal servers
+o	Only HTTP, HTTPS, DNS and ICMP traffic should be allowed between the internet and the DMZ servers
+o	No traffic is allowed between the internal servers and the DMZ servers
+
+
+complete the following tasks:
+==============================
+•	Create security zones.
+•	Create inspect class-maps to match traffic to be allowed in the respective zones
+•	Create policy-maps to define actions to be taken on the matching traffic
+•	Create zone pairs where they are required
+•	Apply security policies and the firewall interfaces to the right security zones
+

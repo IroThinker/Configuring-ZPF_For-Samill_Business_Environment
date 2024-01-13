@@ -1,0 +1,177 @@
+
+HostName
+==========
+hostname ZPF_FW-01
+
+Enanle password
+================
+enable secret 5 $1$mERr$zfs/wIA/jPpApOTOtkL2T.
+
+
+Local Users
+==============
+username admin privilege 15 secret 5 $1$mERr$zfs/wIA/jPpApOTOtkL2T.
+username hasan secret 5 $1$mERr$qplDZGupoCb2eH1BLsz2S1
+username iromika secret 5 $1$mERr$0HZeauAmFk9NWfrpXRxq.1
+
+
+Domain
+=======
+ip domain-name workshop.com
+
+
+Class-Map
+=============
+class-map type inspect match-any INT_USER_PROTOCOLS
+ match protocol dns
+ match protocol https
+ match protocol icmp
+ match protocol smtp
+ match protocol snmp
+ match protocol ssh
+ match protocol ftp
+ match protocol http
+class-map type inspect match-any DMZ_SVR_PROTOCOLS
+ match protocol http
+ match protocol https
+ match protocol icmp
+ match protocol dns
+class-map type inspect match-any INTERNET_PROTOCOLS
+ match protocol tcp
+ match protocol udp
+class-map type inspect match-any INT_USER_INTERNET_PROTOCOLS
+ match protocol http
+ match protocol https
+ match protocol icmp
+ match protocol dns
+ match protocol smtp
+class-map type inspect match-any DMZSVR_INTSVR_PROTOCOLS
+ match protocol udp
+ match protocol tcp
+
+
+Class type inspect
+====================
+policy-map type inspect INT_USER_TO_INT_SVR
+ class type inspect INT_USER_PROTOCOLS
+  inspect
+
+policy-map type inspect INT_USER_TO_DMZ_SVR
+ class type inspect INT_USER_PROTOCOLS
+  inspect
+
+policy-map type inspect INT_USER_TO_INTERNET
+ class type inspect INT_USER_INTERNET_PROTOCOLS
+  inspect
+
+policy-map type inspect INTERNET_TO_INT_USER
+ class type inspect INTERNET_PROTOCOLS
+  inspect
+
+policy-map type inspect INTERNET_TO_INT_SVR
+ class type inspect INTERNET_PROTOCOLS
+  inspect
+
+policy-map type inspect INTERNET_TO_DMZ_SVR
+ class type inspect DMZ_SVR_PROTOCOLS
+  inspect
+
+policy-map type inspect INT_SVR_TO_DMZ_SVR
+ class type inspect DMZSVR_INTSVR_PROTOCOLS
+  inspect
+
+policy-map type inspect DMZ_SVR_TO_INT_SVR
+ class type inspect DMZSVR_INTSVR_PROTOCOLS
+  inspect
+
+
+Security Zone
+==================
+zone security INT_USER
+zone security DMZ_SVR
+zone security INTERNET
+zone security INT_SVR
+
+
+Security Zone pair
+====================
+zone-pair security INT_USER_TO_INT_SVR source INT_USER destination INT_SVR
+ service-policy type inspect INT_USER_TO_INT_SVR
+zone-pair security INT_USER_TO_DMZ_SVR source INT_USER destination DMZ_SVR
+ service-policy type inspect INT_USER_TO_DMZ_SVR
+zone-pair security INT_USER_TO_INTERNET source INT_USER destination INTERNET
+ service-policy type inspect INT_USER_TO_INTERNET
+zone-pair security INTERNET_TO_INT_USER source INTERNET destination INT_USER
+ service-policy type inspect INTERNET_TO_INT_USER
+zone-pair security INTERNET_TO_INT_SVR source INTERNET destination INT_SVR
+ service-policy type inspect INTERNET_TO_INT_SVR
+zone-pair security INTERNET_TO_DMZ_SVR source INTERNET destination DMZ_SVR
+ service-policy type inspect INTERNET_TO_DMZ_SVR
+zone-pair security INT_SVR_TO_DMZ_SVR source INT_SVR destination DMZ_SVR
+ service-policy type inspect INT_SVR_TO_DMZ_SVR
+zone-pair security DMZ_SVR_TO_INT_SVR source DMZ_SVR destination INT_SVR
+ service-policy type inspect DMZ_SVR_TO_INT_SVR
+
+
+Interface Configuration
+==========================
+interface GigabitEthernet0/0/0
+ ip address 192.168.1.254 255.255.255.0
+ zone-member security INT_SVR
+ duplex auto
+ speed auto
+
+interface GigabitEthernet0/0/1
+ ip address 192.168.0.254 255.255.255.0
+ zone-member security INT_USER
+ duplex auto
+ speed auto
+ 
+interface Serial0/1/0
+ ip address 209.165.201.1 255.255.255.252
+ zone-member security DMZ_SVR
+ clock rate 2000000
+
+interface Serial0/1/1
+ ip address 209.165.202.1 255.255.255.252
+ zone-member security INTERNET
+ clock rate 2000000
+
+
+Routing
+========
+router rip
+ network 192.168.0.0
+ network 192.168.1.0
+ network 209.165.201.0
+ network 209.165.202.0
+
+
+Login Banner
+================
+banner motd ^C*******************************************************
+* WARNING: Unauthorized access to this device is      *
+* prohibited. This system is for authorized use only. *
+* By accessing this system, you agree that your       *
+* actions may be monitored and recorded.              *
+* Any unauthorized access will be prosecuted under    *
+* applicable laws.                                    *
+*******************************************************^C
+
+
+Line Console
+==============
+line con 0
+ exec-timeout 5 0
+ password 7 08204843001725464058
+ logging synchronous
+ login local
+
+
+Line vty
+===========
+line vty 0 4
+ exec-timeout 5 0
+ logging synchronous
+ login local
+ transport input ssh

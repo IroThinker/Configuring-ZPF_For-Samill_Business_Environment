@@ -1,0 +1,75 @@
+HostName
+============
+hostname INT_ZONE-R-01
+
+
+Enable Password
+=================
+enable secret 5 $1$mERr$zfs/wIA/jPpApOTOtkL2T.
+
+
+Local Users
+=============
+username admin privilege 15 secret 5 $1$mERr$zfs/wIA/jPpApOTOtkL2T.
+username hasan secret 5 $1$mERr$qplDZGupoCb2eH1BLsz2S1
+username iromika secret 5 $1$mERr$0HZeauAmFk9NWfrpXRxq.1
+
+
+Domain
+=========
+ip domain-name workshop.com
+
+
+Interface Configuration
+=========================
+interface GigabitEthernet0/0
+ ip address 203.1.100.254 255.255.255.0
+ duplex auto
+ speed auto
+
+interface GigabitEthernet0/1
+ ip address 198.51.100.254 255.255.255.0
+ duplex auto
+ speed auto
+
+interface Serial0/1/0
+ ip address 209.165.202.2 255.255.255.252
+
+
+Routing
+============
+router rip
+ network 198.51.100.0
+ network 203.1.100.0
+ network 209.165.202.0
+
+
+Login Banner
+===============
+banner motd ^C*******************************************************
+* WARNING: Unauthorized access to this device is      *
+* prohibited. This system is for authorized use only. *
+* By accessing this system, you agree that your       *
+* actions may be monitored and recorded.              *
+* Any unauthorized access will be prosecuted under    *
+* applicable laws.                                    *
+*******************************************************^C
+
+
+
+Line Console
+=============
+line con 0
+ exec-timeout 5 0
+ password admin@123
+ logging synchronous
+ login local
+
+
+Line vty
+===========
+line vty 0 4
+ exec-timeout 5 0
+ logging synchronous
+ login local
+ transport input ssh
